@@ -26,19 +26,20 @@ namespace TodoApp.Frontend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var daprClient = new DaprClientBuilder().Build();
-            var counter = await daprClient.GetStateAsync<int>(storeName, key);
-            counter++;
-            await daprClient.SaveStateAsync(storeName, key, counter);
-            ViewBag.Counter = counter;
+            ViewBag.Todos = new List<Todo>
+            {
+                new Todo
+                {
+                    Id = 1,
+                    Name = "Fix the APIs"
+                },
 
-            var port = Environment.GetEnvironmentVariable("DAPR_HTTP_PORT");
-
-            HttpClient client = new HttpClient();
-            var re = await client.GetAsync($"http://localhost:{port}/v1.0/invoke/todo-back/method/todos");
-            var text = await re.Content.ReadAsStringAsync();
-            ViewBag.Text = text + "," + re.StatusCode + ",";
-            ViewBag.Todos = JsonConvert.DeserializeObject<List<Todo>>(text);
+                new Todo
+                {
+                    Id = 2,
+                    Name = "Then try again"
+                }
+            };
 
             return View();
         }

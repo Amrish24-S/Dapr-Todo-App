@@ -26,20 +26,11 @@ namespace TodoApp.Frontend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Todos = new List<Todo>
-            {
-                new Todo
-                {
-                    Id = 1,
-                    Name = "Fix the APIs"
-                },
-
-                new Todo
-                {
-                    Id = 2,
-                    Name = "Then try again"
-                }
-            };
+            HttpClient client = new HttpClient();
+            var re = await client.GetAsync("http://localhost:443");
+            var text = await re.Content.ReadAsStringAsync();
+            ViewBag.Text = text + "," + re.StatusCode + ",";
+            ViewBag.Todos = JsonConvert.DeserializeObject<List<Todo>>(text);
 
             return View();
         }
